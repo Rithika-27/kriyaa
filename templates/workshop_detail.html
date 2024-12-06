@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>workshop Details Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            margin-top: 20px;
+            color: #444;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        input[type="text"] {
+            width: 95%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .footer-signatures {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .footer-signatures div {
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Event Details Form</h2>
+
+        <!-- Secretary Details -->
+        <h3>Secretary Details:</h3>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Roll Number</th>
+                <th>Mobile No</th>
+            </tr>
+            <tr>
+                <td><input type="text" name="secretary_name"></td>
+                <td><input type="text" name="secretary_roll_number"></td>
+                <td><input type="text" name="secretary_mobile"></td>
+            </tr>
+        </table>
+
+        <!-- Convenor and Volunteer Details -->
+        <h3>Convenor and Volunteer Details:</h3>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Roll Number</th>
+                <th>Mobile No</th>
+            </tr>
+            <tr>
+                <td colspan="3"><strong>Convenors</strong></td>
+            </tr>
+            <tr>
+                <td><input type="text" name="convenor_name"></td>
+                <td><input type="text" name="convenor_roll_number"></td>
+                <td><input type="text" name="convenor_mobile"></td>
+            </tr>
+            <tr>
+                <td colspan="3"><strong>Volunteers</strong></td>
+            </tr>
+            <tr>
+                <td><input type="text" name="volunteer_name"></td>
+                <td><input type="text" name="volunteer_roll_number"></td>
+                <td><input type="text" name="volunteer_mobile"></td>
+            </tr>
+        </table>
+
+        <!-- Faculty Advisor Details -->
+        <h3>Faculty Advisor Details:</h3>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Contact Details</th>
+            </tr>
+            <tr>
+                <td><input type="text" name="faculty_advisor_name"></td>
+                <td><input type="text" name="faculty_advisor_designation"></td>
+                <td><input type="text" name="faculty_advisor_contact"></td>
+            </tr>
+        </table>
+
+        <!-- Speaker Details -->
+        <h3>Speaker Details:</h3>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Designation</th>
+                <th>Contact Details</th>
+            </tr>
+            <tr>
+                <td><input type="text" name="speaker_name"></td>
+                <td><input type="text" name="speaker_designation"></td>
+                <td><input type="text" name="speaker_contact"></td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <strong>Speaker Signature</strong><br>
+                    <small>(Signature can be E-signature. Mention any external collaboration if applicable.)</small>
+                </td>
+            </tr>
+        </table>
+        <button type="submit" class="next-btn">Next</button>
+
+
+
+    </div>
+</body>
+
+</html>

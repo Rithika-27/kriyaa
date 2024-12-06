@@ -1,0 +1,177 @@
+/* General Body Styles */
+html,
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f4f8;
+    height: 100%;
+    /* Ensure the body and html elements occupy full height */
+    overflow: hidden;
+    /* Prevent scrollbars from appearing */
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+/* Container */
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    /* Ensure container takes full height */
+}
+
+/* Header Section */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #f0f4f8;
+    color: black;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.page-header .kriya-logo img {
+    max-width: 120px;
+    height: auto;
+}
+
+.page-header .logo img {
+    max-width: 230px;
+    height: auto;
+}
+
+/* Footer Section */
+.page-footer {
+    background-color: #5d5d5d;
+    color: rgb(255, 254, 254);
+    padding: 0px;
+    text-align: center;
+    font-size: 12px;
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+/* Main Section */
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    /* Add padding to prevent content from touching the edges */
+    box-sizing: border-box;
+}
+
+/* Search Bar Section */
+.search-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -5px;
+    gap: 15px;
+}
+
+.search-bar {
+    width: 100%;
+    max-width: 600px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+}
+
+.search-bar:focus {
+    border-color: #0056b3;
+}
+
+.login-button {
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Cards Section */
+.cards-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Card Container */
+.card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Card Styling */
+.card {
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    width: 300px;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Different Colors for Each Card */
+.event-card {
+    background-color: #f9edc2;
+}
+
+.presentation-card {
+    background-color: #d4f4dd;
+}
+
+.workshops-card {
+    background-color: #e6eaff;
+}
+
+.card h3 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Hover Effect */
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    background-color: #fdfdfd;
+}
+
+.card-link {
+    text-decoration: none;
+    /* Remove underline */
+    color: inherit;
+}
+
+.card-container a:hover .card {
+    transform: scale(1.05);
+}

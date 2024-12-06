@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Preview</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .header {
+            text-align: center;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section h3 {
+            background-color: #f1f1f1;
+            padding: 10px;
+            margin: 0;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        .table th {
+            background-color: #f1f1f1;
+        }
+        .table td {
+            text-align: left;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Event Preview</h1>
+        <h3>{{ event_id }} - Event Details</h3>
+    </div>
+
+    <!-- Event Info Section -->
+    <div class="section">
+        <h3>Event Information</h3>
+        <table class="table">
+            <tr>
+                <th>Secretary</th>
+                <th>Convenor</th>
+                <th>Faculty Advisor</th>
+                <th>Judge</th>
+            </tr>
+            <tr>
+                const storedData = JSON.parse(localStorage.getItem('eventDetails'));
+console.log(storedData); // Output the stored data
+
+                <td>{{ event_info.secretary.name }}<br>
+                    Roll No: {{ event_info.secretary.roll_number }}<br>
+                    Mobile: {{ event_info.secretary.mobile }}
+                </td>
+                <td>{{ event_info.convenor.name }}<br>
+                    Roll No: {{ event_info.convenor.roll_number }}<br>
+                    Mobile: {{ event_info.convenor.mobile }}
+                </td>
+                <td>{{ event_info.faculty_advisor.name }}<br>
+                    Designation: {{ event_info.faculty_advisor.designation }}<br>
+                    Contact: {{ event_info.faculty_advisor.contact }}
+                </td>
+                <td>{{ event_info.judge.name }}<br>
+                    Designation: {{ event_info.judge.designation }}<br>
+                    Contact: {{ event_info.judge.contact }}
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Event Schedule Section -->
+    <div class="section">
+        <h3>Event Schedule</h3>
+        <table class="table">
+            <tr>
+                <th>Days</th>
+                <th>Participants</th>
+                <th>Team Size</th>
+                <th>Slots</th>
+            </tr>
+            <tr>
+                <td>
+                    {% if event_info.day_1 %}Day 1<br>{% endif %}
+                    {% if event_info.day_2 %}Day 2<br>{% endif %}
+                    {% if event_info.day_3 %}Day 3<br>{% endif %}
+                </td>
+                <td>{{ event_info.participants }}</td>
+                <td>Min: {{ event_info.team_min }} - Max: {{ event_info.team_max }}</td>
+                <td>{{ event_info.slot }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Items Section -->
+    <div class="section">
+        <h3>Items Required</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Price per Unit</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td>{{ item.sno }}</td>
+                        <td>{{ item.item_name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.price_per_unit }}</td>
+                        <td>{{ item.total_price }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Rounds Section -->
+    <div class="section">
+        <h3>Event Rounds</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Round No</th>
+                    <th>Round Name</th>
+                    <th>Description</th>
+                    <th>Rules</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for round in rounds %}
+                    <tr>
+                        <td>{{ round.round_no }}</td>
+                        <td>{{ round.name }}</td>
+                        <td>{{ round.description }}</td>
+                        <td>{{ round.rules }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        <p>Thank you for organizing the event! Event ID: {{ event_id }}</p>
+    </div>
+
+</body>
+</html>

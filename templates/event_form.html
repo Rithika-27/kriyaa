@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Event Details</title>
+</head>
+<body>
+    <h1>Enter Event Details</h1>
+    <form method="POST">
+        <!-- Event Details -->
+        <label for="name">Event Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+
+        <label for="tagline">One Line Description (Tagline):</label>
+        <input type="text" id="tagline" name="tagline" required><br><br>
+
+        <label for="about">About the Event:</label>
+        <textarea id="about" name="about" required></textarea><br><br>
+
+        <!-- Number of Rounds -->
+        <label for="round_count">Number of Rounds:</label>
+        <input type="number" id="round_count" name="round_count" min="1" required><br><br>
+
+        <div id="rounds">
+            <!-- Dynamic round fields will be added here based on the number of rounds -->
+        </div>
+
+        <button type="submit">Submit Event</button>
+    </form>
+
+    <script>
+        // JavaScript to dynamically add input fields for each round based on the number of rounds
+        document.getElementById('round_count').addEventListener('input', function() {
+            let roundsContainer = document.getElementById('rounds');
+            roundsContainer.innerHTML = '';  // Clear previous round fields
+            let roundCount = parseInt(this.value);
+            for (let i = 0; i < roundCount; i++) {
+                // Create round input fields dynamically
+                let roundHTML = `
+                    <h3>Round ${i + 1}</h3>
+                    <label for="round_name_${i}">Round Name:</label>
+                    <input type="text" id="round_name_${i}" name="round_name_${i}" required><br><br>
+
+                    <label for="round_description_${i}">Round Description:</label>
+                    <textarea id="round_description_${i}" name="round_description_${i}" required></textarea><br><br>
+
+                    <label for="round_rules_${i}">Round Rules:</label>
+                    <textarea id="round_rules_${i}" name="round_rules_${i}" required></textarea><br><br>
+                `;
+                roundsContainer.innerHTML += roundHTML;
+            }
+        });
+    </script>
+</body>
+</html>

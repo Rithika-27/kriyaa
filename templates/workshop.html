@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 600px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 5px;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
+
+        input[type="checkbox"],
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Event Details Form</h1>
+        <form action="#" method="POST">
+            <table>
+                <!-- Day Selection -->
+                <tr>
+                    <th>Day 2</th>
+                    <th>Day 3</th>
+                    <th>Both Days</th>
+                </tr>
+                <tr>
+                    <td><input type="radio" name="day" value="day2"></td>
+                    <td><input type="radio" name="day" value="day3"></td>
+                    <td><input type="radio" name="day" value="both_days"></td>
+                </tr>
+
+                <!-- Expected No. of Participants -->
+                <tr>
+                    <th colspan="3">Expected No. of Participants</th>
+                </tr>
+                <tr>
+                    <td colspan="3"><input type="number" name="participants" placeholder="Enter number of participants">
+                    </td>
+                </tr>
+
+                <!-- Proposing Fees -->
+                <tr>
+                    <th colspan="3">Proposing Fees (Min: ₹300 / Max: ₹1000)</th>
+                </tr>
+                <tr>
+                    <td colspan="3"><input type="number" name="proposing_fees" placeholder="Enter fees"></td>
+                </tr>
+
+                <!-- Speaker Remuneration -->
+                <tr>
+                    <th colspan="3">Speaker Remuneration (if any)</th>
+                </tr>
+                <tr>
+                    <td colspan="3"><input type="text" name="speaker_remuneration"
+                            placeholder="Enter speaker remuneration"></td>
+                </tr>
+
+                <!-- Halls/Labs Required -->
+                <tr>
+                    <th colspan="3">Number of Halls/Labs Required</th>
+                </tr>
+                <tr>
+                    <td colspan="3"><input type="number" name="halls_required" placeholder="Enter number of halls/labs">
+                    </td>
+                </tr>
+
+                <!-- Preferred Halls/Labs -->
+                <tr>
+                    <th colspan="3">Halls/Labs Preferred</th>
+                </tr>
+                <tr>
+                    <td colspan="3"><input type="text" name="preferred_halls" placeholder="Enter preferred halls/labs">
+                    </td>
+                </tr>
+
+                <!-- Duration of Event -->
+                <tr>
+                    <th colspan="3">Duration of the Event</th>
+                </tr>
+                <tr>
+                    <td><input type="radio" name="slot" value="slot1"> Slot 1 (9:30 to 12:30)</td>
+                    <td><input type="radio" name="slot" value="slot2"> Slot 2 (1:30 to 4:30)</td>
+                    <td><input type="radio" name="slot" value="full_day"> Full Day</td>
+                </tr>
+
+                <!-- Extension Box -->
+                <tr>
+                    <th colspan="3">Extension Box (Number Required)</th>
+                </tr>
+                <tr>
+                    <td colspan="3"><input type="number" name="extension_box" placeholder="Enter quantity"></td>
+                </tr>
+
+                <!-- Submit Button -->
+                <tr>
+                    <td colspan="3" style="text-align: center;">
+                        <button type="submit">Submit</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</body>
+
+</html>
