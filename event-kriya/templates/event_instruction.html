@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Form Instructions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/instructions.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        ol {
+            margin-left: 20px;
+            font-size: 16px;
+        }
+
+        .important {
+            color: red;
+            font-weight: bold;
+        }
+
+        .note {
+            background-color: #f9f9f9;
+            border-left: 4px solid #f7b731;
+            padding: 10px;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        .instructions-list {
+            margin-top: 20px;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            margin-top: 40px;
+        }
+
+        .footer a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .agree-section {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .agree-checkbox {
+            margin-right: 10px;
+        }
+
+        .next-button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .next-button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Instructions to be Read Before Filling the Form</h1>
+
+        <div class="note">
+            <p><span class="important">Important:</span> 
+                * If two different events are to be conducted, then fill the above form for each event separately and submit it.<br>
+                ** If the same event continues on both the days (i.e., Preliminary round on the first day and final round on the second day), then fill the needed requirements in the same form.
+            </p>
+        </div>
+
+        <div class="instructions-list">
+            <h3>Instructions:</h3>
+            <ol>
+                <li>Not all the events and workshops submitted will be approved.</li>
+                <li>Maximum of two events, one workshop, and one paper presentation can be proposed.</li>
+                <li>Events and workshops should be innovative or based on the trending new technologies relating to the respective stream.</li>
+                <li>Judges must be present throughout the duration of the event.</li>
+                <li>No cash prize, memento, or any other form of prizes should be given by clubs/associations to the event winners.</li>
+                <li>Memento for the external chief guest will be provided by the Students Union if filled in the items required table.</li>
+                <li>Certificates to the winners, runners, convenors, and volunteers of each event will be provided by the Students Union.</li>
+                <li>If any materials are required prior to the day of the event, please mention "Required in advance" near that material in the "Item Name" column.</li>
+                <li>Halls will be allotted based on availability.</li>
+                <li>The projector will not be provided by the Students Union. Use the projector available in the hall.</li>
+                <li>Winner and runner details should be submitted within one hour from the end of the event.</li>
+                <li>HDMI cables/VGA converter will not be provided.</li>
+                <li>Take enough copies of the form for your reference.</li>
+                <li>Further changes are not accepted.</li>
+                <li>Submit it to the point of contact allotted to your club/association.</li>
+                <li>For more details, contact your respective point of contact.</li>
+            </ol>
+        </div>
+
+        <div class="agree-section">
+            <input type="checkbox" id="agreeCheckbox" class="agree-checkbox">
+            <label for="agreeCheckbox">I agree to the terms and conditions</label>
+            <br>
+            <button id="nextButton" class="next-button" onclick="navigateToEventPage()" disabled>Proceed</button>
+        </div>
+
+        <div class="footer">
+            <p>For any clarifications, feel free to <a href="mailto:contact@studentsunion.com">Contact the Students Union</a>.</p>
+        </div>
+    </div>
+
+    <script>
+        // Enable the "Proceed to Event Page" button when the checkbox is checked
+        const agreeCheckbox = document.getElementById('agreeCheckbox');
+        const nextButton = document.getElementById('nextButton');
+
+        agreeCheckbox.addEventListener('change', function () {
+            if (agreeCheckbox.checked) {
+                nextButton.disabled = false;
+            } else {
+                nextButton.disabled = true;
+            }
+        });
+
+        // Function to navigate to the event details page in Flask
+        function navigateToEventPage() {
+            window.location.href = "{{ url_for('event_detail') }}";  
+        }
+    </script>
+
+</body>
+</html>

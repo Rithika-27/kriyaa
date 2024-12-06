@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Bar with Cards</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+</head>
+
+<body>
+  <div class="container">
+    <!-- Header Section -->
+    <header class="page-header">
+      <div class="logo">
+        <img src="{{ url_for('static', filename='images/psg.png') }}" alt="PSG Logo">
+      </div>
+      <div class="kriya-logo">
+        <img src="{{ url_for('static', filename='images/kriya.png') }}" alt="Kriya Logo">
+      </div>
+    </header>
+
+    <!-- Search Bar Section -->
+    <section class="search-section">
+      <input type="text" class="search-bar" placeholder="Search here...">
+      <button class="login-button">Login</button>
+    </section>
+
+    <!-- Main Cards Section -->
+    <main>
+      <div class="cards-container">
+        <!-- Link to the Event Page -->
+        <div class="card-container">
+          <a href="/event-instructions" class="card-link">
+            <div class="card event-card">
+              <h3>Event</h3>
+            </div>
+          </a>
+        </div>
+
+        <!-- Link to the Presentation Page -->
+        <div class="card-container">
+          <a href="/presentation-instructions" class="card-link">
+            <div class="card presentation-card">
+              <h3>Presentation</h3>
+            </div>
+          </a>
+        </div>
+
+        <!-- Link to the Workshops Page -->
+        <div class="card-container">
+          <a href="/workshop-instructions" class="card-link">
+            <div class="card workshops-card">
+              <h3>Workshops</h3>
+            </div>
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="page-footer">
+      <p>@Powered by Students Union</p>
+    </footer>
+  </div>
+</body>
+
+</html>

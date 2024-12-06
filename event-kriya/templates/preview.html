@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Preview</title>
+    <style>
+        /* Add your styles here */
+        .container {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .section {
+            margin-bottom: 20px;
+        }
+
+        .details p {
+            margin: 5px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        .btn-container button {
+            border: none;
+            cursor: pointer;
+        }
+
+        form {
+            display: inline;
+        }
+
+        @media (max-width: 600px) {
+            table {
+                font-size: 12px;
+            }
+
+            .btn-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Event Preview</h1>
+
+        <!-- Secretary Section -->
+        <div class="section">
+            <h2>Secretary Details</h2>
+            <div class="details">
+                <p><strong>Name:</strong> {{ details['event_details']['secretary'][0].get('name', 'N/A') }}</p>
+                <p><strong>Roll Number:</strong> {{ details['event_details']['secretary'][0].get('roll_number', 'N/A') }}</p>
+                <p><strong>Mobile:</strong> {{ details['event_details']['secretary'][0].get('mobile', 'N/A') }}</p>
+            </div>
+        </div>
+
+        <!-- Convenor Section -->
+        <div class="section">
+            <h2>Convenor Details</h2>
+            <div class="details">
+                <p><strong>Name:</strong> {{ details['event_details']['convenor'][0].get('name', 'N/A') }}</p>
+                <p><strong>Roll Number:</strong> {{ details['event_details']['convenor'][0].get('roll_number', 'N/A') }}</p>
+                <p><strong>Mobile:</strong> {{ details['event_details']['convenor'][0].get('mobile', 'N/A') }}</p>
+            </div>
+        </div>
+
+        <!-- Faculty Advisor Section -->
+        <div class="section">
+            <h2>Faculty Advisor Details</h2>
+            <div class="details">
+                <p><strong>Name:</strong> {{ details['event_details']['faculty_advisor'][0].get('name', 'N/A') }}</p>
+                <p><strong>Designation:</strong> {{ details['event_details']['faculty_advisor'][0].get('designation', 'N/A') }}</p>
+                <p><strong>Contact:</strong> {{ details['event_details']['faculty_advisor'][0].get('contact', 'N/A') }}</p>
+            </div>
+        </div>
+
+        <!-- Judge Section -->
+        <div class="section">
+            <h2>Judge Details</h2>
+            <div class="details">
+                <p><strong>Name:</strong> {{ details['event_details']['judge'][0].get('name', 'N/A') }}</p>
+                <p><strong>Designation:</strong> {{ details['event_details']['judge'][0].get('designation', 'N/A') }}</p>
+                <p><strong>Contact:</strong> {{ details['event_details']['judge'][0].get('contact', 'N/A') }}</p>
+            </div>
+        </div>
+
+        <!-- Items Table -->
+        <div class="section">
+            <h2>Items</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Price per Unit</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <!-- <tbody>
+                    {% if details['event_details']['items'] %}
+                        {% for item in details['event_details']['items'] %}
+                        <tr>
+                            <td>{{ item['sno'] }}</td>
+                            <td>{{ item['item_name'] }}</td>
+                            <td>{{ item['quantity'] }}</td>
+                            <td>{{ item['price_per_unit'] }}</td>
+                            <td>{{ item['total_price'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan="5">No items available</td></tr>
+                    {% endif %}
+                </tbody> -->
+                <tbody>
+                    {% if details['event_details']['items'] %}
+                        {% for item in details['event_details']['items'] %}
+                        <tr>
+                            <td>{{ item['sno'] }}</td>
+                            <td>{{ item['item_name'] }}</td>
+                            <td>{{ item['quantity'] }}</td>
+                            <td>{{ item['price_per_unit'] }}</td>
+                            <td>{{ item['total_price'] }}</td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan="5">No items available</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="btn-container">
+            <!-- Edit Button -->
+            <a href="{{ url_for('event_detail') }}" class="btn" title="Edit event details">Edit</a>
+
+            <!-- Final Submit Button -->
+            <form action="{{ url_for('final_submit') }}" method="POST">
+                <input type="hidden" name="event_id" value="{{ details['event_id'] }}" required>
+                <button type="submit" class="btn">Final Submit</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
