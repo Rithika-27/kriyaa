@@ -80,13 +80,10 @@
         <p><strong class="event-id">Generated Event ID: {{ event_id }}</strong></p>
 
         <!-- Preview PDF button -->
-        <a href="{{ url_for('event_preview', event_id=event_id) }}" class="btn">Preview Event</a>
+        <a href="{{ url_for('view_preview') }}" class="btn">Preview PDF</a>
 
         <!-- Other buttons -->
-        <a href="{{ url_for('event_data_page', event_id=event_id) }}">
-            <button>Go Back to Event Data</button>
-        </a>
-        
+        <a href="{{ url_for('home') }}" class="btn">Go to Home</a>
         <a href="{{ url_for('event_detail') }}" class="btn">Back to Event Details</a>
     </div>
 </body>

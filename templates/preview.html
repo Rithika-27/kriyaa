@@ -1,165 +1,164 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Event Preview</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+    <title>Preview Page</title>
+    <script>
+        // Function to load the event data from localStorage and display it
+        function loadPreviewData() {
+            // Retrieve event details, event data, items, and event summary from localStorage
+            const eventDetails = JSON.parse(localStorage.getItem('eventDetails'));
+            const eventData = JSON.parse(localStorage.getItem('eventData'));
+            const eventItems = JSON.parse(localStorage.getItem('items'));
+            const eventFormData = JSON.parse(localStorage.getItem('eventFormData')); // Correct key name
+
+            // Check and display event details
+            if (eventDetails) {
+                const eventDetailsContainer = document.getElementById('eventDetails');
+                eventDetailsContainer.innerHTML = `
+                    <h2>Event Details:</h2>
+                    <pre>${JSON.stringify(eventDetails, null, 2)}</pre>
+                `;
+            } else {
+                document.getElementById('eventDetails').innerHTML = '<p>No event details found.</p>';
+            }
+
+            // Check and display event data
+            if (eventData) {
+                const eventDataContainer = document.getElementById('eventData');
+                eventDataContainer.innerHTML = `
+                    <h2>Event Data:</h2>
+                    <pre>${JSON.stringify(eventData, null, 2)}</pre>
+                `;
+            } else {
+                document.getElementById('eventData').innerHTML = '<p>No event data found.</p>';
+            }
+
+            // Check and display event items in a table
+            if (eventItems) {
+                const eventItemsContainer = document.getElementById('eventItems');
+                let itemsTableHTML = `
+                    <h2>Event Items:</h2>
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <th>S.NO.</th>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                                <th>Price per Unit</th>
+                                <th>Total Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                eventItems.forEach(item => {
+                    itemsTableHTML += `
+                        <tr>
+                            <td>${item.sno}</td>
+                            <td>${item.item_name}</td>
+                            <td>${item.quantity}</td>
+                            <td>${item.price_per_unit}</td>
+                            <td>${item.total_price}</td>
+                        </tr>
+                    `;
+                });
+
+                itemsTableHTML += `
+                        </tbody>
+                    </table>
+                `;
+
+                eventItemsContainer.innerHTML = itemsTableHTML;
+            } else {
+                document.getElementById('eventItems').innerHTML = '<p>No event items found.</p>';
+            }
+
+            // Display eventFormData (new section for event form data)
+            if (eventFormData) {
+                const eventFormDataContainer = document.getElementById('eventFormData');
+                let formDataHTML = `
+                    <h2>Event Form Data:</h2>
+                    <pre>${JSON.stringify(eventFormData, null, 2)}</pre>
+                `;
+                eventFormDataContainer.innerHTML = formDataHTML;
+            } else {
+                document.getElementById('eventFormData').innerHTML = '<p>No form data found.</p>';
+            }
         }
-        .header {
-            text-align: center;
+
+        // Call the function to load the preview data when the page loads
+        window.onload = loadPreviewData;
+
+        function submitEventData() {
+        const eventDetails = JSON.parse(localStorage.getItem('eventDetails'));
+        const eventData = JSON.parse(localStorage.getItem('eventData'));
+        const eventItems = JSON.parse(localStorage.getItem('items'));
+        const eventFormData = JSON.parse(localStorage.getItem('eventFormData'));
+
+        if (eventDetails && eventData && eventItems && eventFormData) {
+            // Merge all data into a single object
+            const allEventData = { eventDetails, eventData, eventItems, eventFormData };
+
+            // Simulate submitting the data (sending it to the backend)
+            fetch('/submit_event', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(allEventData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        // If successful, redirect to the confirmation page
+                        window.location.href = '/confirm';
+                    } else {
+                        alert('Error submitting event data: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error submitting event data:', error);
+                    alert('Failed to submit event data.');
+                });
+        } else {
+            alert('No event data to submit.');
         }
-        .section {
-            margin-bottom: 20px;
-        }
-        .section h3 {
-            background-color: #f1f1f1;
-            padding: 10px;
-            margin: 0;
-        }
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .table th, .table td {
-            padding: 8px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-        .table th {
-            background-color: #f1f1f1;
-        }
-        .table td {
-            text-align: left;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 40px;
-        }
-    </style>
+    }
+    </script>
 </head>
+
 <body>
-
-    <div class="header">
+    <div class="container">
         <h1>Event Preview</h1>
-        <h3>{{ event_id }} - Event Details</h3>
+
+        <!-- Event Details Section -->
+        <div id="eventDetails">
+            <h2>Event Details:</h2>
+            <!-- Populated dynamically -->
+        </div>
+
+        <!-- Event Data Section -->
+        <div id="eventData">
+            <h2>Event Data:</h2>
+            <!-- Populated dynamically -->
+        </div>
+
+        <!-- Event Items Section -->
+        <div id="eventItems">
+            <h2>Event Items:</h2>
+            <!-- Populated dynamically as a table -->
+        </div>
+
+        <!-- Event Form Data Section -->
+        <div id="eventFormData">
+            <h2>Event Form Data:</h2>
+            <!-- Populated dynamically -->
+        </div>
+
+        <!-- Submit Button -->
+        <button onclick="submitEventData()">Submit</button>
     </div>
-
-    <!-- Event Info Section -->
-    <div class="section">
-        <h3>Event Information</h3>
-        <table class="table">
-            <tr>
-                <th>Secretary</th>
-                <th>Convenor</th>
-                <th>Faculty Advisor</th>
-                <th>Judge</th>
-            </tr>
-            <tr>
-                const storedData = JSON.parse(localStorage.getItem('eventDetails'));
-console.log(storedData); // Output the stored data
-
-                <td>{{ event_info.secretary.name }}<br>
-                    Roll No: {{ event_info.secretary.roll_number }}<br>
-                    Mobile: {{ event_info.secretary.mobile }}
-                </td>
-                <td>{{ event_info.convenor.name }}<br>
-                    Roll No: {{ event_info.convenor.roll_number }}<br>
-                    Mobile: {{ event_info.convenor.mobile }}
-                </td>
-                <td>{{ event_info.faculty_advisor.name }}<br>
-                    Designation: {{ event_info.faculty_advisor.designation }}<br>
-                    Contact: {{ event_info.faculty_advisor.contact }}
-                </td>
-                <td>{{ event_info.judge.name }}<br>
-                    Designation: {{ event_info.judge.designation }}<br>
-                    Contact: {{ event_info.judge.contact }}
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- Event Schedule Section -->
-    <div class="section">
-        <h3>Event Schedule</h3>
-        <table class="table">
-            <tr>
-                <th>Days</th>
-                <th>Participants</th>
-                <th>Team Size</th>
-                <th>Slots</th>
-            </tr>
-            <tr>
-                <td>
-                    {% if event_info.day_1 %}Day 1<br>{% endif %}
-                    {% if event_info.day_2 %}Day 2<br>{% endif %}
-                    {% if event_info.day_3 %}Day 3<br>{% endif %}
-                </td>
-                <td>{{ event_info.participants }}</td>
-                <td>Min: {{ event_info.team_min }} - Max: {{ event_info.team_max }}</td>
-                <td>{{ event_info.slot }}</td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- Items Section -->
-    <div class="section">
-        <h3>Items Required</h3>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>S.No</th>
-                    <th>Item Name</th>
-                    <th>Quantity</th>
-                    <th>Price per Unit</th>
-                    <th>Total Price</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in items %}
-                    <tr>
-                        <td>{{ item.sno }}</td>
-                        <td>{{ item.item_name }}</td>
-                        <td>{{ item.quantity }}</td>
-                        <td>{{ item.price_per_unit }}</td>
-                        <td>{{ item.total_price }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Rounds Section -->
-    <div class="section">
-        <h3>Event Rounds</h3>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Round No</th>
-                    <th>Round Name</th>
-                    <th>Description</th>
-                    <th>Rules</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for round in rounds %}
-                    <tr>
-                        <td>{{ round.round_no }}</td>
-                        <td>{{ round.name }}</td>
-                        <td>{{ round.description }}</td>
-                        <td>{{ round.rules }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <div class="footer">
-        <p>Thank you for organizing the event! Event ID: {{ event_id }}</p>
-    </div>
-
 </body>
+
 </html>

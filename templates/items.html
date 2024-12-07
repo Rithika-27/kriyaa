@@ -3,65 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Items Required</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/items.css') }}">
-    <script>
-        // Function to calculate total price for each row
-        function calculateTotalPrice(row) {
-            const quantity = parseFloat(row.querySelector(".quantity").value) || 0;
-            const pricePerUnit = parseFloat(row.querySelector(".price-per-unit").value) || 0;
-            const totalPrice = row.querySelector(".total-price");
-            totalPrice.value = (quantity * pricePerUnit).toFixed(2);
+    <title>Items Required for Event</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
         }
 
-        // Function to add a new row to the table
-        function addRow() {
-            const tableBody = document.getElementById("item-rows");
-            const newRow = document.createElement("tr");
-
-            newRow.innerHTML = `
-                <td><input type="number" name="sno" required min="1" class="sno"></td>
-                <td><input type="text" name="item_name" required></td>
-                <td><input type="number" name="quantity" required min="1" class="quantity" oninput="calculateTotalPrice(this.parentElement.parentElement)"></td>
-                <td><input type="number" step="0.01" name="price_per_unit" required min="0" class="price-per-unit" oninput="calculateTotalPrice(this.parentElement.parentElement)"></td>
-                <td><input type="number" step="0.01" name="total_price" required min="0" class="total-price" readonly></td>
-            `;
-
-            tableBody.appendChild(newRow);
+        h1 {
+            text-align: center;
         }
-    </script>
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        button {
+            margin: 10px 5px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .links {
+            margin-top: 20px;
+        }
+
+        .links a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Items Required for Event</h1>
-        <form action="{{ url_for('items_page') }}" method="POST">
-            <table>
-                <thead>
-                    <tr>
-                        <th>S.NO.</th>
-                        <th>Item Name</th>
-                        <th>Quantity</th>
-                        <th>Price per Unit</th>
-                        <th>Total Price</th>
-                    </tr>
-                </thead>
-                <tbody id="item-rows">
-                    <tr>
-                        <td><input type="number" name="sno" required min="1" class="sno"></td>
-                        <td><input type="text" name="item_name" required></td>
-                        <td><input type="number" name="quantity" required min="1" class="quantity" oninput="calculateTotalPrice(this.parentElement.parentElement)"></td>
-                        <td><input type="number" step="0.01" name="price_per_unit" required min="0" class="price-per-unit" oninput="calculateTotalPrice(this.parentElement.parentElement)"></td>
-                        <td><input type="number" step="0.01" name="total_price" required min="0" class="total-price" readonly></td>
-                    </tr>
-                </tbody>
-            </table>
-            <button type="button" onclick="addRow()">Add Row</button>
-            <button type="submit">Confirm</button>
-        </form>
-        <br>
-        <a href="{{ url_for('event_page') }}">Back to Event Form</a>
-        <br><br>
-        <a href="{{ url_for('home') }}">Home</a>
+    <h1>Items Required for Event</h1>
+    <form id="itemsForm">
+        <table id="itemsTable">
+            <thead>
+                <tr>
+                    <th>S.NO.</th>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Price per Unit</th>
+                    <th>Total Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be dynamically added here -->
+            </tbody>
+        </table>
+        <button type="button" id="addRowButton">Add Row</button>
+        <button type="submit">Save to LocalStorage</button>
+    </form>
+
+    <div class="links">
+        <a href="/event-form.html">Back to Event Form</a>
+        <a href="/">Home</a>
     </div>
+
+    <script>
+        const itemsTable = document.getElementById("itemsTable").querySelector("tbody");
+        let rowCount = 0;
+
+        // Function to add a new row
+        function addRow() {
+            rowCount++;
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${rowCount}</td>
+                <td><input type="text" name="item_name" required></td>
+                <td><input type="number" name="quantity" min="1" value="1" required></td>
+                <td><input type="number" name="price_per_unit" min="0" value="0" required></td>
+                <td><input type="text" name="total_price" value="0" readonly></td>
+                <td><button type="button" onclick="deleteRow(this)">Delete</button></td>
+            `;
+            itemsTable.appendChild(row);
+
+            // Add event listener for quantity and price changes
+            const quantityInput = row.querySelector("input[name='quantity']");
+            const priceInput = row.querySelector("input[name='price_per_unit']");
+            const totalPriceInput = row.querySelector("input[name='total_price']");
+
+            const updateTotalPrice = () => {
+                const quantity = parseFloat(quantityInput.value) || 0;
+                const pricePerUnit = parseFloat(priceInput.value) || 0;
+                totalPriceInput.value = (quantity * pricePerUnit).toFixed(2);
+            };
+
+            quantityInput.addEventListener("input", updateTotalPrice);
+            priceInput.addEventListener("input", updateTotalPrice);
+        }
+
+        // Function to delete a row
+        function deleteRow(button) {
+            const row = button.closest("tr");
+            row.remove();
+            updateRowNumbers();
+        }
+
+        // Update row numbers after deleting a row
+        function updateRowNumbers() {
+            rowCount = 0;
+            itemsTable.querySelectorAll("tr").forEach((row, index) => {
+                rowCount++;
+                row.children[0].textContent = index + 1;
+            });
+        }
+
+        // Add initial row on page load
+        document.getElementById("addRowButton").addEventListener("click", addRow);
+
+        // Load saved items from localStorage on page load
+        window.onload = function() {
+            const savedItems = JSON.parse(localStorage.getItem("items"));
+            if (savedItems && Array.isArray(savedItems)) {
+                savedItems.forEach(item => {
+                    addRow();
+                    const lastRow = itemsTable.querySelector("tr:last-child");
+                    const inputs = lastRow.querySelectorAll("input");
+
+                    inputs[0].value = item.item_name;
+                    inputs[1].value = item.quantity;
+                    inputs[2].value = item.price_per_unit;
+                    inputs[3].value = item.total_price;
+                });
+            }
+        };
+
+        // Handle form submission
+        document.getElementById("itemsForm").addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            const items = [];
+            itemsTable.querySelectorAll("tr").forEach(row => {
+                const itemName = row.querySelector("input[name='item_name']").value;
+                const quantity = parseInt(row.querySelector("input[name='quantity']").value);
+                const pricePerUnit = parseFloat(row.querySelector("input[name='price_per_unit']").value);
+                const totalPrice = parseFloat(row.querySelector("input[name='total_price']").value);
+
+                if (itemName && quantity > 0 && pricePerUnit >= 0) {
+                    items.push({
+                        sno: row.children[0].textContent,
+                        item_name: itemName,
+                        quantity: quantity,
+                        price_per_unit: pricePerUnit,
+                        total_price: totalPrice
+                    });
+                }
+            });
+
+            // Save the items to localStorage
+            localStorage.setItem("items", JSON.stringify(items));
+            alert("Items saved to localStorage successfully!");
+
+            
+            window.location.href = './event-summary';  // Redirect to the summary page
+            
+            
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            width: 70%;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Event Details</h1>
+        <table>
+            <!-- Days Section -->
+            <tr>
+                <th>Day 1</th>
+                <th>Day 2</th>
+                <th>Both Days</th>
+            </tr>
+            <tr>
+                <td><input type="checkbox" {% if 'day1' in event_details.day %}checked{% endif %} disabled></td>
+                <td><input type="checkbox" {% if 'day2' in event_details.day %}checked{% endif %} disabled></td>
+                <td><input type="checkbox" {% if 'bothDays' in event_details.day %}checked{% endif %} disabled></td>
+            </tr>
+
+            <!-- Expected Participants -->
+            <tr>
+                <th>Expected Number of Participants</th>
+                <td colspan="2">
+                    {{ event_details.participants|default('N/A') }}
+                </td>
+            </tr>
+
+            <!-- Team Size -->
+            <tr>
+                <th>Team Size (Min-Max)</th>
+                <td colspan="2">
+                    Min: {{ event_details.teamSizeMin|default('N/A') }}, Max: {{
+                    event_details.teamSizeMax|default('N/A') }}
+                </td>
+            </tr>
+
+            <!-- Halls Section -->
+            <tr>
+                <th>Number of Halls/Labs Required</th>
+                <td colspan="2">
+                    {{ event_details.halls_required|default('N/A') }}
+                </td>
+            </tr>
+            <tr>
+                <th>Reason for Multiple Halls</th>
+                <td colspan="2">
+                    {{ event_details.hallReason|default('N/A') }}
+                </td>
+            </tr>
+            <tr>
+                <th>Halls/Labs Preferred</th>
+                <td colspan="2">
+                    {{ event_details.halls_preferred|default('N/A') }}
+                </td>
+            </tr>
+
+            <!-- Duration Section -->
+            <tr>
+                <th>Duration of the Event</th>
+                <td colspan="2">
+                    Slot 1: 9:30 to 12:30 <input type="radio" {% if event_details.duration=='slot1' %}checked{% endif %}
+                        disabled>
+                    Slot 2: 1:30 to 4:30 <input type="radio" {% if event_details.duration=='slot2' %}checked{% endif %}
+                        disabled>
+                    Full Day <input type="radio" {% if event_details.duration=='fullDay' %}checked{% endif %} disabled>
+                </td>
+            </tr>
+
+            <!-- Number Required Section -->
+            <tr>
+                <th>Number Required</th>
+                <td colspan="2">
+                    {{ event_details.numbers_required|default('N/A') }}
+                </td>
+            </tr>
+            <tr>
+                <th>Reason for Number</th>
+                <td colspan="2">
+                    {{ event_details.numberReason|default('N/A') }}
+                </td>
+            </tr>
+
+            <!-- Extension Box Section -->
+            <tr>
+                <th>Extension Box</th>
+                <td colspan="2">
+                    {{ event_details.extensionBox|default('N/A') }}
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>

@@ -1,11 +1,9 @@
-from flask import Flask, flash, redirect, url_for, render_template, request, session, send_file, jsonify
+from flask import Flask, send_file, render_template, request, redirect, url_for, flash, session, jsonify
 from pymongo import MongoClient
-from io import BytesIO
-from xhtml2pdf import pisa
-from bson import ObjectId
+import json
 
 app = Flask(__name__)
-app.secret_key = 'xyz1234nbg789ty8inmcv2134'
+app.secret_key = 'xyz1234nbg789ty8inmcv2134'  # Make sure this key is kept secure
 
 # MongoDB connection
 MONGO_URI = "mongodb+srv://Entries:ewp2025@cluster0.1tuj7.mongodb.net/event-kriya?retryWrites=true&w=majority"
@@ -13,9 +11,10 @@ client = MongoClient(MONGO_URI)
 db = client["event-kriya"]
 event_collection = db["event-entries"]
 
+# Main route for home
 @app.route('/')
 def home():
-    session.pop("event_id", None)  # Clear session for a new event
+    # session.clear()  # Clear all session data for a new event
     return render_template('home.html')
 
 @app.route('/event-instructions', methods=['GET', 'POST'])
@@ -24,152 +23,102 @@ def event_instructions():
         return redirect(url_for('event_detail'))
     return render_template('event_instruction.html')
 
+# Event Details Form
 @app.route('/event-detail', methods=['GET', 'POST'])
 def event_detail():
     if request.method == 'POST':
-        form_data = {
-            "secretary": {
-                "name": request.form.get("secretary_name"),
-                "roll_number": request.form.get("secretary_roll_number"),
-                "mobile": request.form.get("secretary_mobile"),
-            },
-            "convenor": {
-                "name": request.form.get("convenor_name"),
-                "roll_number": request.form.get("convenor_roll_number"),
-                "mobile": request.form.get("convenor_mobile"),
-            },
-            "faculty_advisor": {
-                "name": request.form.get("faculty_advisor_name"),
-                "designation": request.form.get("faculty_advisor_designation"),
-                "contact": request.form.get("faculty_advisor_contact"),
-            },
-            "judge": {
-                "name": request.form.get("judge_name"),
-                "designation": request.form.get("judge_designation"),
-                "contact": request.form.get("judge_contact"),
-            }
+        # Collect event details and store in session
+        event_details = {
+            'secretary_name': request.form['secretary_name'],
+            'secretary_roll_number': request.form['secretary_roll_number'],
+            'secretary_mobile': request.form['secretary_mobile'],
+            'convenor_name': request.form['convenor_name'],
+            'convenor_roll_number': request.form['convenor_roll_number'],
+            'convenor_mobile': request.form['convenor_mobile'],
+            'faculty_advisor_name': request.form['faculty_advisor_name'],
+            'faculty_advisor_designation': request.form['faculty_advisor_designation'],
+            'faculty_advisor_contact': request.form['faculty_advisor_contact'],
+            'judge_name': request.form['judge_name'],
+            'judge_designation': request.form['judge_designation'],
+            'judge_contact': request.form['judge_contact']
         }
-
-        try:
-            event_id = session.get("event_id")
-            if not event_id:
-                last_event = event_collection.find_one(sort=[("event_id", -1)])
-                if last_event and "event_id" in last_event:
-                    last_event_num = int(last_event["event_id"][4:])
-                    event_id = f"EVNT{last_event_num + 1:02d}"
-                else:
-                    event_id = "EVNT01"
-                session["event_id"] = event_id
-
-            event_collection.update_one(
-                {"event_id": event_id},
-                {
-                    "$set": {"event_id": event_id, "status": "temporary"},
-                    "$push": {
-                        "event_details.secretary": form_data["secretary"],
-                        "event_details.convenor": form_data["convenor"],
-                        "event_details.faculty_advisor": form_data["faculty_advisor"],
-                        "event_details.judge": form_data["judge"]
-                    }
-                },
-                upsert=True
-            )
-            flash("Event details saved temporarily!")
-            return redirect(url_for('event_page'))
-        except Exception as e:
-            print(f"Error saving event details: {e}")
-            flash("An error occurred while saving event details.")
-            return redirect(url_for('event_detail'))
-
+        session['event_details'] = event_details
+        return redirect(url_for('event_page'))
     return render_template('event_detail.html')
 
+# Event Data Form
 @app.route('/event', methods=['GET', 'POST'])
 def event_page():
-    event_id = session.get("event_id")
-    if not event_id:
-        flash("Event ID not found in session.")
-        return redirect(url_for('home'))
-
-    # Use global collection reference
     if request.method == 'POST':
-        # Gather the form data
+        # Collect event data and store in session
         event_data = {
-            "day_1": bool(request.form.get("day_1")),
-            "day_2": bool(request.form.get("day_2")),
-            "day_3": bool(request.form.get("day_3")),
-            "two_days": request.form.get("two_days", "").strip(),
-            "participants": request.form.get("participants", "").strip(),
-            "team_min": request.form.get("team_min", "").strip(),
-            "team_max": request.form.get("team_max", "").strip(),
-            "halls_required": request.form.get("halls_required", "").strip(),
-            "preferred_halls": request.form.get("preferred_halls", "").strip(),
-            "slot": request.form.get("slot", "").strip(),
-            "extension_boxes": request.form.get("extension_boxes", "").strip()
+            'day_1': 'day_1' in request.form,
+            'day_2': 'day_2' in request.form,
+            'day_3': 'day_3' in request.form,
+            'two_days': request.form.get('two_days'),
+            'rounds': request.form.get('rounds'),
+            'participants': request.form.get('participants'),
+            'individual': 'individual' in request.form,
+            'team': 'team' in request.form,
+            'team_min': request.form.get('team_min'),
+            'team_max': request.form.get('team_max'),
+            'halls_required': request.form.get('halls_required'),
+            'preferred_halls': request.form.get('preferred_halls'),
+            'slot': request.form.get('slot'),
+            'extension_boxes': request.form.get('extension_boxes'),
+            'event_description': request.form.get('event_description'),
+            'event_location': request.form.get('event_location')
         }
+        session['event_data'] = event_data
+        return redirect(url_for('items_page'))
+    return render_template('event.html')
 
-        # Validate required fields
-        if not event_data["participants"] or not event_data["halls_required"]:
-            flash("Please fill in all the required fields.")
-            return redirect(url_for('event_page'))
-
-        # Optional fields for team event (team min/max)
-        event_data["team"] = 'team' in request.form
-
-        try:
-            # Update the event data in MongoDB
-            event_collection.update_one(
-                {"event_id": event_id},
-                {"$set": {"event": event_data}}
-            )
-            flash("Event details updated successfully!")
-            return redirect(url_for('items_page'))
-        except Exception as e:
-            print(f"Error saving event data to MongoDB: {e}")
-            flash("An error occurred while updating event details.")
-            return redirect(url_for('event_page'))
-
-    # Retrieve existing event data if it's a GET request
-    event_data = event_collection.find_one({"event_id": event_id})
-    if event_data:
-        return render_template('event.html', event_data=event_data.get('event', {}))
-    else:
-        flash("Event not found.")
-        return redirect(url_for('home'))
+@app.route('/submit-items', methods=['POST'])
+def submit_items():
+    data = request.json
+    items = data.get("items", [])
+    if not items:
+        return jsonify({"error": "No items provided"}), 400
     
+    # Simulate processing the items (e.g., saving to the database)
+    session['event_items'] = items  # Store items in the session for later use
+
+    # Redirect to the event summary page
+    return jsonify({"message": "Items received successfully!", "redirect_url": url_for('event_summary')}), 200
+
+
 @app.route('/items', methods=['GET', 'POST'])
 def items_page():
-    event_id = session.get("event_id")
-    if not event_id:
-        flash("Event ID not found.")
-        return redirect(url_for('home'))
+    if 'event_items' not in session:
+        session['event_items'] = []
 
     if request.method == 'POST':
-        items_data = {
-            "sno": request.form.get("sno"),
-            "item_name": request.form.get("item_name"),
-            "quantity": request.form.get("quantity"),
-            "price_per_unit": request.form.get("price_per_unit"),
-            "total_price": request.form.get("total_price"),
-        }
-
-        if not items_data["item_name"] or not items_data["quantity"]:
-            flash("Item name and quantity are required.")
-            return redirect(url_for('items_page'))
-
+        # Collect item data from the form and store it in the session
         try:
-            event_collection.update_one(
-                {"event_id": event_id},
-                {"$push": {"items": items_data}}
-            )
-            flash("Item details saved successfully!")
+            item_data = {
+                "sno": request.form.get("sno"),
+                "item_name": request.form.get("item_name"),
+                "quantity": int(request.form.get("quantity")),
+                "price_per_unit": float(request.form.get("price_per_unit")),
+                "total_price": int(request.form.get("quantity")) * float(request.form.get("price_per_unit"))
+            }
+
+            # Validate required fields
+            if not item_data["item_name"] or not item_data["quantity"]:
+                flash("Item name and quantity are required.")
+                return redirect(url_for('items_page'))
+
+            # Append item to session
+            session['event_items'].append(item_data)
+            flash("Item added successfully!")
             return redirect(url_for('event_summary'))
-        except Exception as e:
-            print(f"Error saving item data to MongoDB: {e}")
-            flash("An error occurred while saving item details.")
+        except ValueError:
+            flash("Please enter valid numeric values for quantity and price.")
             return redirect(url_for('items_page'))
 
-    return render_template('items.html')
+    return render_template('items.html', event_items=session['event_items'])
 
+# Event Summary Form
 @app.route('/event-summary', methods=['GET', 'POST'])
 def event_summary():
     if request.method == 'POST':
@@ -180,142 +129,100 @@ def event_summary():
 
         round_count = int(request.form.get('round_count', 0))
         for i in range(round_count):
-            round_name = request.form.get(f'round_name_{i}')
-            round_description = request.form.get(f'round_description_{i}')
-            round_rules = request.form.get(f'round_rules_{i}')
             rounds.append({
                 "round_no": i + 1,
-                "name": round_name,
-                "description": round_description,
-                "rules": round_rules
+                "name": request.form.get(f'round_name_{i}'),
+                "description": request.form.get(f'round_description_{i}'),
+                "rules": request.form.get(f'round_rules_{i}')
             })
 
-        try:
-            event_collection.update_one(
-                {"event_id": session.get("event_id")},
-                {"$set": {
-                    "name": event_name,
-                    "tagline": tagline,
-                    "about": about,
-                    "rounds": rounds
-                }},
-                upsert=True
-            )
-            flash("Event summary saved successfully!")
-        except Exception as e:
-            print(f"Error saving event summary: {e}")
-            flash("An error occurred while saving the event summary.")
-
-        return redirect(url_for('confirm_submission'))
-
+        session['event_summary'] = {
+            "name": event_name,
+            "tagline": tagline,
+            "about": about,
+            "rounds": rounds
+        }
+        return redirect(url_for('preview'))
     return render_template('event_form.html')
 
-@app.route('/confirm', methods=['GET', 'POST'])
-def confirm_submission():
-    event_id_str = session.get("event_id")
 
-    if not event_id_str:
-        flash("Error: Event ID not found in session.")
-        return redirect(url_for('event_detail'))
+@app.route('/preview', methods=['GET'])
+def preview():
+    try:
+        # Retrieve event details, event data, event items, and event form data from session
+        event_details = session.get('event_details', {})
+        event_data = session.get('event_data', {})
+        event_items = session.get('event_items', [])
+        event_form_data = session.get('event_form_data', {})
+
+        # Pass all the data to the template
+        return render_template('preview.html', 
+                               event_details=event_details, 
+                               event_data=event_data,
+                               event_items=event_items,
+                               event_form_data=event_form_data)
+    except Exception:
+        return jsonify({"status": "error", "message": "Error retrieving preview data"}), 500
+@app.route('/submit_event', methods=['POST'])
+def submit_event():
+    try:
+        # Get the request JSON data
+        all_event_data = request.get_json()  # Correct method to get JSON data
+        event_details = all_event_data.get('eventDetails')
+        event_data = all_event_data.get('eventData')
+        event_items = all_event_data.get('eventItems')  # Correct field name should match
+        event_summary = all_event_data.get('eventFormData')
+
+        # Log the received data to ensure it's correct
+        print("Received event details:", event_details)
+        print("Received event data:", event_data)
+        print("Received event items:", event_items)  # Log items
+        print("Received event summary:", event_summary)
+
+        # Generate a new event ID based on the last event ID in the database
+        existing_event = event_collection.find_one(sort=[("event_id", -1)])
+        if existing_event and "event_id" in existing_event:
+            last_event_num = int(existing_event["event_id"][4:])
+            new_event_id = f"EVNT{last_event_num + 1:02d}"
+        else:
+            new_event_id = "EVNT01"
+
+        # Prepare the event entry for the database
+        event_entry = {
+            "event_id": new_event_id,
+            "details": event_details,
+            "event": event_data,
+            "items": event_items,
+            "form": event_summary,
+        }
+        print("Event Entry to be inserted:", event_entry)
+        
+        # Insert data into the database
+        event_collection.insert_one(event_entry)
+
+        session["event_id"] = new_event_id
+
+        return jsonify({"status": "success", "message": "Event submitted successfully!", "event_id": new_event_id}), 200
+
+    except Exception as e:
+        print("Error during event submission:", str(e))
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+
+# Confirmation Page
+@app.route('/confirm')
+def confirm_page():
+    return render_template('confirm.html')
+
+@app.route('/download-event/<event_id>')
+def download_event(event_id):
+    # Example: Generate or locate a file for the event (e.g., PDF, JSON, etc.)
+    file_path = f'./downloads/event_{event_id}.pdf'  # Replace with your logic
 
     try:
-        event = event_collection.find_one({"event_id": event_id_str})
-
-        if not event:
-            flash("Error: Event not found.")
-            return redirect(url_for('event_detail'))
-
-        event_id_from_db = event.get("event_id")
-
-        if not event_id_from_db:
-            flash("Error: Event ID not found in the event document.")
-            return redirect(url_for('event_detail'))
-
-        flash(f"Event {event_id_from_db} retrieved successfully!")
-        return render_template('confirm.html', event_id=event_id_from_db)  # Updated template path
-    except Exception as e:
-        print(f"Error retrieving event: {e}")
-        flash("An error occurred during event retrieval. Please try again.")
-        return redirect(url_for('event_page'))  # Redirect to event_page if error occurs
-
-@app.route('/event-data/<event_id>')
-def event_data_page(event_id):
-    event_details = get_event_details(event_id)
+        return send_file(file_path, as_attachment=True)
+    except FileNotFoundError:
+        return f"File for Event ID {event_id} not found", 404
     
-    # Debug: Check the structure of event_details and items
-    print("Event details:", event_details)
-    print("Items type:", type(event_details['items']))
-    
-    # Ensure that 'items' is a list
-    if isinstance(event_details['items'], list):
-        return render_template('event_data.html', event_details=event_details)
-    else:
-        print("Error: 'items' is not a list")
-        return "Error: 'items' is not iterable", 500
-
-def get_event_details(event_id):
-    event = event_collection.find_one({"event_id": event_id})
-    
-    if event:
-        # Ensure that the 'items' key is always a list, even if it is missing
-        event['items'] = event.get('items', [])
-    
-    return event
-
-@app.route('/event_preview/<event_id>', methods=['GET'])
-def event_preview(event_id):
-    # Fetch event details using the event_id from MongoDB
-    event_details = get_event_details(event_id)
-
-    if not event_details:
-        flash("Event details not found.")
-        return redirect(url_for('confirm_submission'))
-
-    # Render individual sections using the data fetched from MongoDB
-    instructions_html = render_template('event_instruction.html', details=event_details)
-    event_details_html = render_template('preview.html', details=event_details)
-    
-    # Combine both HTML sections, ensuring there's a page break between them
-    full_html = f"""
-    <html>
-        <head>
-            <style>
-                /* Add page break after the instructions */
-                @page {{ size: A4; margin: 20mm; }}
-                .page-break {{ page-break-before: always; }}
-                body {{
-                    font-family: Arial, sans-serif;
-                    margin: 0;
-                    padding: 0;
-                    background-color: #f4f4f4;
-                }}
-                h1, h2 {{
-                    color: #333;
-                    margin: 10px 0;
-                }}
-            </style>
-        </head>
-        <body>
-            {instructions_html}
-            <div class="page-break"></div>
-            {event_details_html}
-        </body>
-    </html>
-    """
-
-    # Generate PDF from the combined HTML content
-    pdf_stream = BytesIO()
-    pisa_status = pisa.CreatePDF(full_html, dest=pdf_stream)
-
-    if pisa_status.err:
-        return "Error generating PDF", 500
-
-    pdf_stream.seek(0)
-    return send_file(
-        pdf_stream,
-        as_attachment=True,
-        download_name=f'preview_event_{event_id}.pdf',
-        mimetype='application/pdf'
-    )
 if __name__ == "__main__":
     app.run(debug=True)
